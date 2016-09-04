@@ -142,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void nextRound(View v){
+        int rowMax = -100000, rowMin = 100000;
+
         TableRow row = new TableRow(this);
         row.setGravity(Gravity.CENTER);
         row.setBackgroundColor(Color.WHITE);
@@ -162,8 +164,19 @@ public class MainActivity extends AppCompatActivity {
             else
                 curPoints -= Math.abs(made-predicted) * 10;
             row.addView(makeTextView(String.valueOf(curPoints), fixedColumnWidthn, fixedRowHeight));
+
+            if(i == 1) rowMax = rowMin = curPoints;
+            else if(rowMax < curPoints) rowMax = curPoints;
+            else if(rowMin > curPoints) rowMin = curPoints;
+
             points[curRound-1][i-1] = curPoints;
         }
+
+        for(int i = 0; i < noP; i++){
+            int green = (points[curRound-1][i]-rowMin) * 255 / (rowMax-rowMin);
+            row.getChildAt(i*2+2).setBackgroundColor(Color.rgb(255-green, 255, 255-green));
+        }
+
         resultsTable.removeViewAt(1);
         resultsTable.addView(row, 3);
 
